@@ -1,15 +1,45 @@
 {
-  "name": "sczts-custom-form",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "_from": "sczts-custom-form",
+  "_id": "sczts-custom-form@0.0.1",
+  "_inBundle": false,
+  "_integrity": "sha512-GHn1ZEaP/7ZXtJO+OPclV+T1wDHAZF0zFXD33JTRgQtpjs/DozQLEQeSKLAITL14szgQZ+EEO84BI7KGyzY+EQ==",
+  "_location": "/sczts-custom-form",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "sczts-custom-form",
+    "name": "sczts-custom-form",
+    "escapedName": "sczts-custom-form",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
   },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/sczts-custom-form/-/sczts-custom-form-0.0.1.tgz",
+  "_shasum": "962353da09456e0d27c60379c565b05ecca36b76",
+  "_spec": "sczts-custom-form",
+  "_where": "E:\\fe\\jzrkm_admin",
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/eiixy/sczts-custom-form/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "## 组件说明 1. 表单编辑器",
+  "homepage": "https://github.com/eiixy/sczts-custom-form#readme",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "sczts-custom-form",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/eiixy/sczts-custom-form.git"
   },
-  "author": "",
-  "license": "MIT"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.0.1"
 }

@@ -59,7 +59,11 @@
                 <component :is="'cf-i-' + item.type" :value="forms[index]"></component>
               </el-form-item>
             </div>
-            <i class="el-icon-close remove" v-if="item.canRemove!==false" @click.stop="remove(index)"></i>
+            <i
+              class="el-icon-close remove"
+              v-if="item.canRemove!==false"
+              @click.stop="remove(index)"
+            ></i>
           </el-col>
         </draggable>
       </el-row>
@@ -92,7 +96,7 @@ export default {
       });
     },
     select(val) {
-      console.log("watch-select", val)
+      console.log("watch-select", val);
       let index = this.forms.findIndex(item => {
         return item.key == val;
       });
@@ -109,14 +113,24 @@ export default {
     };
   },
   methods: {
+    randomStr(length) {
+      length = length || 32;
+      let chars = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678";
+      let maxPos = chars.length;
+      let str = "";
+      for (let i = 0; i < length; i++) {
+        str += chars.charAt(Math.floor(Math.random() * maxPos));
+      }
+      return str;
+    },
     add(item) {
-      let key = item.type + "_" + this.$randomStr(6);
+      let key = item.type + "_" + this.randomStr(6);
       let loop = false;
       do {
         loop = false;
         this.forms.forEach(item => {
           if (item.key == key) {
-            key = item.type + "_" + this.$randomStr(6);
+            key = item.type + "_" + this.randomStr(6);
             loop = true;
           }
         });
@@ -127,13 +141,13 @@ export default {
       });
       if (index == -1) {
         this.forms.push({
-          ...this.$copy(item),
+          ...JSON.parse(JSON.stringify(item)),
           value: null,
           key: key
         });
       } else {
         this.forms.splice(index + 1, 0, {
-          ...this.$copy(item),
+          ...JSON.parse(JSON.stringify(item)),
           value: null,
           key: key
         });
@@ -145,16 +159,16 @@ export default {
       let _index = index == this.forms.length - 1 ? index - 1 : index + 1;
       this.select = _index == -1 ? false : this.forms[_index].key;
       console.log(index, _index, this.select, this.forms);
-      this.$nextTick(() =>{
+      this.$nextTick(() => {
         this.forms.splice(index, 1);
-      })
+      });
     },
     flush(defaultForms) {
       this.select = false;
       this.$set(this, "forms", defaultForms);
     },
     setSelect(item) {
-      this.select = item.key
+      this.select = item.key;
     }
   }
 };

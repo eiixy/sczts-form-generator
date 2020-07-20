@@ -19,17 +19,20 @@ export default {
       }
     });
     // 自定义控件
-    options.extend.keys().forEach(fileName => {
-      let type = fileName.replace("./", "").replace(".vue", "").replace(".js", "").split("/");
-      const componentConfig = options.extend(fileName);
-      if (type[1] == "input") {
-        components["cf-i-" + type[0]] = componentConfig.default || componentConfig;
-      } else if (type[1] == "attribute") {
-        components["cf-a-" + type[0]] = componentConfig.default || componentConfig;
-      } else if (type[1] == "transfer") {
-        transfers[type[0]] = componentConfig.default || componentConfig;
-      }
-    });
+    if('extend' in options && options.extend != []){
+      options.extend.keys().forEach(fileName => {
+        let type = fileName.replace("./", "").replace(".vue", "").replace(".js", "").split("/");
+        const componentConfig = options.extend(fileName);
+        if (type[1] == "input") {
+          components["cf-i-" + type[0]] = componentConfig.default || componentConfig;
+        } else if (type[1] == "attribute") {
+          components["cf-a-" + type[0]] = componentConfig.default || componentConfig;
+        } else if (type[1] == "transfer") {
+          transfers[type[0]] = componentConfig.default || componentConfig;
+        }
+      });
+    }
+
 
     // 注册到全局组件
     for (let name in components) {

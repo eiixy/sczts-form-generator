@@ -9,13 +9,18 @@
 </template>
 
 <script>
-import formItem from "../form-item"
-import { clearNoNum } from '@/utils/utils'
+import formItem from "../form-item";
 export default {
   extends: formItem,
   methods: {
-    inputhandle({target}) {
-      clearNoNum(target)
+    inputhandle({ target }) {
+      target.value = target.value.replace(/[^\d.]/g, "");
+      target.value = target.value.replace(/^\./g, "");
+      target.value = target.value.replace(/\.{2,}/g, ".");
+      target.value = target.value
+        .replace(".", "$#$")
+        .replace(/\./g, "")
+        .replace("$#$", ".");
     }
   }
 };

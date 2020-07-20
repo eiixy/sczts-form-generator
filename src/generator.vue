@@ -95,8 +95,7 @@ export default {
         ];
       }
     });
-    console.log('rules',this.rules)
-    if (this.$empty(this.watchKeys)) {
+    if (this.watchKeys != null && this.watchKeys != []) {
       this.$emit("beforeChange");
       this.$emit("change");
     }

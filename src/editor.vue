@@ -153,7 +153,7 @@ export default {
   },
   methods: {
     flush() {
-      this.$refs["input-content"].flush(this.$copy(this.defaultForms));
+      this.$refs["input-content"].flush(JSON.parse(JSON.stringify(this.defaultForms)));
     },
     add(item) {
       this.$refs["input-content"].add(item);
