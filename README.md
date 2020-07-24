@@ -4,6 +4,23 @@
 npm i sczts-custom-form
 ```
 
+2. 在 `main.js` 中全局引用
+```javascript
+import Vue from 'vue'
+import CustomForm, { cfLibrary } from 'sczts-custom-form'
+
+// ...
+Vue.use(CustomForm, {
+  library: [
+    ...cfLibrary, // 组件配置
+  ],
+  // 注入扩展组件
+  extend: require.context('./components/custom_form_extends', true, /\.(vue|js)$/),
+});
+
+```
+
+
 ## 组件说明
 ### 1. 表单编辑器
 #### 如何使用
