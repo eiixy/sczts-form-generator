@@ -20,39 +20,7 @@
             <div class="key">
               <input v-model="forms[index].key" />
             </div>
-            <div class="i-object" v-if="item.type == 'object'">
-              <div class="title">
-                {{ item.attributes.title }}
-                <el-tooltip
-                  v-if="(item.attributes.description || null) != null"
-                  effect="dark"
-                  :content="item.attributes.description"
-                >
-                  <i class="el-icon-info"></i>
-                </el-tooltip>
-              </div>
-              <component
-                :is="'cf-i-' + item.type"
-                :value="forms[index]"
-              ></component>
-            </div>
-            <div class="i-array" v-else-if="item.type == 'array'">
-              <div class="title">
-                {{ item.attributes.title }}
-                <el-tooltip
-                  v-if="(item.attributes.description || null) != null"
-                  effect="dark"
-                  :content="item.attributes.description"
-                >
-                  <i class="el-icon-info"></i>
-                </el-tooltip>
-              </div>
-              <component
-                :is="'cf-i-' + item.type"
-                :value="forms[index]"
-              ></component>
-            </div>
-            <div class="i-item" v-else>
+            <div class="i-item">
               <el-form-item
                 class
                 :label="item.attributes.title"
@@ -72,7 +40,7 @@
                   </el-tooltip>
                 </div>
                 <component
-                  :is="'cf-i-' + item.type"
+                  :is="'fg-i-' + item.type"
                   :value="forms[index]"
                 ></component>
               </el-form-item>

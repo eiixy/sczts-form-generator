@@ -26,7 +26,7 @@
               </el-tooltip>
             </template>
             <component
-              :is="'cf-i-' + item.type"
+              :is="'fg-i-' + item.type"
               v-model="forms[index]"
             ></component>
           </el-form-item>

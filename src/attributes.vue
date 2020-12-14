@@ -61,7 +61,7 @@
       <!-- 组件配置属性栏 -->
       <component
         v-if="hasComponent(type)"
-        :is="'cf-a-' + type"
+        :is="'fg-a-' + type"
         v-model="attrs"
       ></component>
     </el-form>
@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     hasComponent(type){
-      return this.$root.$options.components['cf-a-' + type]
+      return this.$root.$options.components['fg-a-' + type]
     },
     addOptions() {
       this.attrs.options.push({

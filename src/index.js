@@ -1,19 +1,19 @@
-import CfEditor from './editor.vue'
-import CfGenerator from './generator.vue'
+import fgEditor from './editor.vue'
+import fgRender from './render.vue'
 
 export default {
   install(Vue, options) {
     let transfers = {};
     let components = {};
-    let requireComponent = require.context("./library", true, /\.(vue|js)$/);
+    let requireComponent = require.context("./widgets", true, /\.(vue|js)$/);
 
     requireComponent.keys().forEach(fileName => {
       let type = fileName.replace("./", "").replace(".vue", "").replace(".js", "").split("/");
       const componentConfig = requireComponent(fileName);
       if (type[1] == "input") {
-        components["cf-i-" + type[0]] = componentConfig.default || componentConfig;
+        components["fg-i-" + type[0]] = componentConfig.default || componentConfig;
       } else if (type[1] == "attribute") {
-        components["cf-a-" + type[0]] = componentConfig.default || componentConfig;
+        components["fg-a-" + type[0]] = componentConfig.default || componentConfig;
       } else if (type[1] == "transfer") {
         transfers[type[0]] = componentConfig.default || componentConfig;
       }
@@ -24,9 +24,9 @@ export default {
         let type = fileName.replace("./", "").replace(".vue", "").replace(".js", "").split("/");
         const componentConfig = options.extend(fileName);
         if (type[1] == "input") {
-          components["cf-i-" + type[0]] = componentConfig.default || componentConfig;
+          components["fg-i-" + type[0]] = componentConfig.default || componentConfig;
         } else if (type[1] == "attribute") {
-          components["cf-a-" + type[0]] = componentConfig.default || componentConfig;
+          components["fg-a-" + type[0]] = componentConfig.default || componentConfig;
         } else if (type[1] == "transfer") {
           transfers[type[0]] = componentConfig.default || componentConfig;
         }
@@ -38,8 +38,8 @@ export default {
     for (let name in components) {
       Vue.component(name, components[name])
     }
-    Vue.component('cf-editor', CfEditor)
-    Vue.component('cf-generator', CfGenerator)
+    Vue.component('fg-editor', fgEditor)
+    Vue.component('fg-render', fgRender)
 
 
     /**
@@ -47,7 +47,7 @@ export default {
      * @param {array} forms 表单配置
      * @param {object} data 元数据
      */
-    Vue.prototype.$cfConvert = (forms, data) => {
+    Vue.prototype.$fgConvert = (forms, data) => {
       forms.forEach(form => {
         if (form.type in transfers && form.key in data) {
           data = transfers[form.type](form, data)
@@ -61,14 +61,14 @@ export default {
      * @param {array} forms 表单配置
      * @param {array} data 元数据
      */
-    Vue.prototype.$cfConvertCollection = (forms, data) => {
+    Vue.prototype.$fgConvertCollection = (forms, data) => {
       for (let i = 0; i < data.length; i++) {
-        data[i] = Vue.prototype.$cfConvert(forms, data[i])
+        data[i] = Vue.prototype.$fgConvert(forms, data[i])
       }
       return data;
     }
 
-    Vue.prototype.$cfLibrary = options.library
+    Vue.prototype.$fgWidgets = options.widgets
   },
 
 

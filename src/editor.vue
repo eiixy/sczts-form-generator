@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <!-- 控件库 -->
-    <el-card class="library" shadow="never">
-      <div class="library-group" v-for="(group, index) in library" :key="index">
+    <el-card class="widgets" shadow="never">
+      <div class="widgets-group" v-for="(group, index) in widgets" :key="index">
         <div class="name">{{ group.name }}</div>
         <div class="widgets">
           <el-row :gutter="10">
             <el-col :span="12" v-for="(widget, i) in group.widgets" :key="i">
-              <div @dblclick="add(widget)" class="library-item">{{ widget.name }}</div>
+              <div @dblclick="add(widget)" class="widgets-item">{{ widget.name }}</div>
             </el-col>
           </el-row>
         </div>
@@ -54,7 +54,7 @@
     <!-- 属性 -->
     <div class="attribute" v-show="show_attrs">
       <el-tabs type="border-card" class="form_attrs" value="attrs">
-        <el-tab-pane class="library-group" name="attrs" label="表单属性">
+        <el-tab-pane class="widgets-group" name="attrs" label="表单属性">
           <el-form label-width="100px" size="small">
             <el-form-item label="标签展示模式">
               <el-select size="mini" v-model="editor.displayType" placeholder="请选择标签展示模式">
@@ -74,16 +74,16 @@
         v-if="selectIndex !== -1 && !preview"
         value="attrs"
       >
-        <el-tab-pane class="library-group" name="attrs" label="控件属性">
+        <el-tab-pane class="widgets-group" name="attrs" label="控件属性">
           <base-attrs
             v-model="editor.forms[selectIndex].attributes"
             :type="editor.forms[selectIndex].type"
           ></base-attrs>
         </el-tab-pane>
-        <el-tab-pane class="library-group" name="style" label="控件样式">
+        <el-tab-pane class="widgets-group" name="style" label="控件样式">
           <ui-attrs v-model="editor.forms[selectIndex].ui" :showTable="showTable"></ui-attrs>
         </el-tab-pane>
-        <!-- <el-tab-pane class="library-group" name="rules" label="验证规则">
+        <!-- <el-tab-pane class="widgets-group" name="rules" label="验证规则">
           <rule-attrs v-model="editor.forms[selectIndex].rules"></rule-attrs>
         </el-tab-pane> -->
       </el-tabs>
@@ -162,7 +162,7 @@ export default {
       selectIndex: this.value.forms.length ? 0 : -1,
       show_attrs: true,
       preview: false,
-      library: this.$cfLibrary,
+      widgets: this.$fgWidgets,
       editor: this.value,
       jsonString: null,
       cmOptions: {
@@ -188,7 +188,7 @@ export default {
         });
       })
     ]);
-    this.library = this.library
+    this.widgets = this.widgets
       .map(group => {
         let widgets = group.widgets.filter(widget => {
           if (
@@ -252,11 +252,11 @@ export default {
   /deep/.el-card__body {
     padding: 16px 8px;
   }
-  .library {
+  .widgets {
     min-width: 240px;
     max-width: 240px;
     box-sizing: border-box;
-    .library-group {
+    .widgets-group {
       display: flex;
       flex-direction: column;
       .name {
@@ -266,7 +266,7 @@ export default {
         line-height: 2;
         padding-bottom: 6px;
       }
-      .library-item {
+      .widgets-item {
         border: 1px solid #ccc;
         margin-bottom: 8px;
         text-align: center;
@@ -360,7 +360,7 @@ export default {
     }
   }
 
-  .library,
+  .widgets,
   .editor,
   .attribute {
     max-height: 700px;

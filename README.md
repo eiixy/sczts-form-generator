@@ -1,21 +1,22 @@
 ## 快速开始
 1. 安装依赖
 ```bash
-npm i sczts-custom-form
+npm i sczts-form-generator
 ```
 
 2. 在 `main.js` 中全局引用
 ```javascript
 import Vue from 'vue'
-import CustomForm, { cfLibrary } from 'sczts-custom-form'
+import formGenerator, { fgWidgets } from 'sczts-form-generator'
 
 // ...
-Vue.use(CustomForm, {
-  library: [
-    ...cfLibrary, // 组件配置
+Vue.use(formGenerator, {
+  widgets: [
+    ...widgets, // 组件配置
+    // 可以注入扩展组件配置
   ],
-  // 注入扩展组件
-  extend: require.context('./components/custom_form_extends', true, /\.(vue|js)$/),
+  // [可选] 注入扩展组件
+  extend: require.context('./components/form_generator_extends', true, /\.(vue|js)$/),
 });
 
 ```
@@ -27,7 +28,7 @@ Vue.use(CustomForm, {
 ```vue
 <template>
   <div>
-    <cf-editor v-model="forms" :defaultForms="defaultForms"></cf-editor>
+    <fg-editor v-model="forms" :defaultForms="defaultForms"></fg-editor>
   </div>
 </template>
 
@@ -58,12 +59,12 @@ showTable | 是否展示列表显示配置 | Boolean
 ```vue
 <template>
   <div>
-    <cf-generator
+    <fg-render
         v-model="form_data"
         :forms="config.forms"
         :labelWidth="config.labelWidth"
         :displayType="config.displayType"
-    ></cf-generator>
+    ></fg-render>
   </div>
 </template>
 
