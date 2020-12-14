@@ -1,14 +1,14 @@
 {
-  "name": "sczts-custom-form",
+  "name": "sczts-form-generator",
   "version": "0.1.0",
-  "description": "",
+  "description": "一款基于 element-ui 的表单设计器",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eiixy/sczts-custom-form.git"
+    "url": "git+https://github.com/sczts/sczts-form-generator.git"
   },
   "author": "",
   "license": "MIT"
