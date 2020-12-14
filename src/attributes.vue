@@ -57,14 +57,13 @@
         <el-form-item v-if="'required' == index" label="是否必填">
           <el-checkbox v-model="attrs.required"></el-checkbox>
         </el-form-item>
-        <!-- 组件配置属性栏 -->
-        <component
-          v-if="hasComponent(type)"
-          :is="'cf-a-' + type"
-          v-model="attrs"
-          :attrName="index"
-        ></component>
       </div>
+      <!-- 组件配置属性栏 -->
+      <component
+        v-if="hasComponent(type)"
+        :is="'cf-a-' + type"
+        v-model="attrs"
+      ></component>
     </el-form>
   </div>
 </template>

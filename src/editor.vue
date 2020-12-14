@@ -103,7 +103,7 @@
 import Attrs from "./attributes";
 import Input from "./input";
 import Ui from "./ui";
-import Rules from "./rules";
+// import Rules from "./rules";
 import FormGenerator from "./generator";
 import { codemirror } from "vue-codemirror";
 import "codemirror/lib/codemirror.css";
@@ -116,7 +116,7 @@ export default {
     "base-attrs": Attrs,
     "input-content": Input,
     "ui-attrs": Ui,
-    "rule-attrs": Rules,
+    // "rule-attrs": Rules,
     "preview-forms": FormGenerator
   },
   props: {
@@ -175,7 +175,7 @@ export default {
         theme: "base16-dark",
         lineNumbers: true,
         line: true
-        // more codemirror options, 更多 codemirror 的高级配置...
+        // 更多 codemirror 的高级配置...
       }
     };
   },
