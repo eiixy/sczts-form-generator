@@ -12,11 +12,11 @@
         <el-col
           v-for="(item, index) in forms"
           :key="index"
-          :span="'width' in item.ui ? item.ui.width:24"
+          :span="'width' in item.ui ? item.ui.width : 24"
         >
           <el-form-item :label="item.attributes.title" :prop="item.key">
             <template class="lable" slot="label">
-              {{item.attributes.title}}
+              {{ item.attributes.title }}
               <el-tooltip
                 v-if="(item.attributes.description || null) != null"
                 effect="dark"
@@ -25,7 +25,10 @@
                 <i class="el-icon-info"></i>
               </el-tooltip>
             </template>
-            <component :is="'cf-i-' + item.type" v-model="forms[index]"></component>
+            <component
+              :is="'cf-i-' + item.type"
+              v-model="forms[index]"
+            ></component>
           </el-form-item>
         </el-col>
       </el-row>
@@ -36,7 +39,7 @@
 </template>
 
 <script>
-import { Debounce, Random } from "sczts-skeleton/helpers";
+import { Common, Random } from "sczts-helpers";
 export default {
   props: {
     keyword: {
@@ -70,8 +73,8 @@ export default {
     value: {
       // 表单数据
       type: Object,
-      default: () =>{
-        return {}
+      default: () => {
+        return {};
       }
     },
     changeDelay: {
@@ -95,7 +98,7 @@ export default {
         ];
       }
     });
-    if (this.watchKeys != null && this.watchKeys != []) {
+    if (Common.empty(this.watchKeys)) {
       this.$emit("beforeChange");
       this.$emit("change");
     }
@@ -114,7 +117,6 @@ export default {
        */
       let change = false;
       let required = true;
-      console.log(val, old_val);
 
       for (let item in val) {
         if (this.watchKeys.includes(item)) {
@@ -129,7 +131,11 @@ export default {
       }
       if (change && required) {
         this.$emit("beforeChange");
-        Debounce(this.keyword, () => this.$emit("change"), this.changeDelay)();
+        Common.debounce(
+          this.keyword,
+          () => this.$emit("change"),
+          this.changeDelay
+        )();
       }
     }
   },
@@ -152,7 +158,7 @@ export default {
       this.forms.forEach(form => {
         if (
           ["select", "amount", "number"].includes(form.type) &&
-          form.attributes.required.value == true
+          form.attributes.required == true
         ) {
           keys.push(form.key);
         }
@@ -169,7 +175,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.el-row{
+.el-row {
   margin: 0;
+}
+.el-form {
+  .el-form-item {
+    margin-bottom: 18px;
+  }
 }
 </style>

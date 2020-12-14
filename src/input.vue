@@ -8,18 +8,21 @@
       :size="size"
     >
       <el-row :gutter="20">
-        <draggable v-model="forms">
+        <draggable v-model="forms" handle=".handle" :animation="200">
           <el-col
             v-for="(item, index) in forms"
             :key="index"
             @click.native="setSelect(item)"
             :span="item.ui.width ? item.ui.width : 24"
-            :class="'form-item' + (select == item.key ? ' active':'')"
+            :class="'form-item' + (select == item.key ? ' active' : '')"
           >
-            <span class="key" v-if="select == item.key">{{item.key}}</span>
+            <i class="el-icon-rank handle" v-if="select == item.key"></i>
+            <div class="key">
+              <input v-model="forms[index].key" />
+            </div>
             <div class="i-object" v-if="item.type == 'object'">
               <div class="title">
-                {{item.attributes.title}}
+                {{ item.attributes.title }}
                 <el-tooltip
                   v-if="(item.attributes.description || null) != null"
                   effect="dark"
@@ -28,11 +31,14 @@
                   <i class="el-icon-info"></i>
                 </el-tooltip>
               </div>
-              <component :is="'cf-i-' + item.type" :value="forms[index]"></component>
+              <component
+                :is="'cf-i-' + item.type"
+                :value="forms[index]"
+              ></component>
             </div>
             <div class="i-array" v-else-if="item.type == 'array'">
               <div class="title">
-                {{item.attributes.title}}
+                {{ item.attributes.title }}
                 <el-tooltip
                   v-if="(item.attributes.description || null) != null"
                   effect="dark"
@@ -41,13 +47,22 @@
                   <i class="el-icon-info"></i>
                 </el-tooltip>
               </div>
-              <component :is="'cf-i-' + item.type" :value="forms[index]"></component>
+              <component
+                :is="'cf-i-' + item.type"
+                :value="forms[index]"
+              ></component>
             </div>
             <div class="i-item" v-else>
-              <el-form-item class :label="item.attributes.title" :prop="item.key">
+              <el-form-item
+                class
+                :label="item.attributes.title"
+                :prop="item.key"
+              >
                 <div class="lable" slot="label">
-                  <span class="required" v-if="item.attributes.required==true">*</span>
-                  {{item.attributes.title}}
+                  <span class="required" v-if="item.attributes.required == true"
+                    >*</span
+                  >
+                  {{ item.attributes.title }}
                   <el-tooltip
                     v-if="(item.attributes.description || null) != null"
                     effect="dark"
@@ -56,12 +71,15 @@
                     <i class="el-icon-info"></i>
                   </el-tooltip>
                 </div>
-                <component :is="'cf-i-' + item.type" :value="forms[index]"></component>
+                <component
+                  :is="'cf-i-' + item.type"
+                  :value="forms[index]"
+                ></component>
               </el-form-item>
             </div>
             <i
               class="el-icon-close remove"
-              v-if="item.canRemove!==false"
+              v-if="item.canRemove !== false"
               @click.stop="remove(index)"
             ></i>
           </el-col>
@@ -73,6 +91,7 @@
 
 <script>
 import draggable from "vuedraggable";
+import { Random } from "sczts-helpers";
 export default {
   props: {
     value: {
@@ -88,7 +107,20 @@ export default {
     draggable
   },
   watch: {
+    value: {
+      handler(val) {
+        this.forms = this.value.forms;
+        this.displayType = this.value.displayType;
+        this.labelWidth = this.value.labelWidth;
+      },
+      deep: true
+    },
     forms() {
+      let index = this.forms.findIndex(item => {
+        return item.key == this.select;
+      });
+      this.$emit("selectIndex", index, this.select);
+
       this.$emit("input", {
         forms: this.forms,
         displayType: this.displayType,
@@ -96,11 +128,10 @@ export default {
       });
     },
     select(val) {
-      console.log("watch-select", val);
       let index = this.forms.findIndex(item => {
         return item.key == val;
       });
-      this.$emit("selectIndex", index);
+      this.$emit("selectIndex", index, val);
     }
   },
   data() {
@@ -113,24 +144,14 @@ export default {
     };
   },
   methods: {
-    randomStr(length) {
-      length = length || 32;
-      let chars = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678";
-      let maxPos = chars.length;
-      let str = "";
-      for (let i = 0; i < length; i++) {
-        str += chars.charAt(Math.floor(Math.random() * maxPos));
-      }
-      return str;
-    },
     add(item) {
-      let key = item.type + "_" + this.randomStr(6);
+      let key = item.type + "_" + Random.string(6, "alpha_num").toLowerCase();
       let loop = false;
       do {
         loop = false;
         this.forms.forEach(item => {
           if (item.key == key) {
-            key = item.type + "_" + this.randomStr(6);
+            key = item.type + "_" + Random.string(6, "alpha_num").toLowerCase();
             loop = true;
           }
         });
@@ -178,7 +199,7 @@ export default {
 .form-item {
   position: relative;
   min-height: 50px;
-  padding: 20px 24px 0;
+  padding: 22px 24px 6px;
   display: flex;
   border: 1px solid #f3f4f5;
   box-sizing: border-box;
@@ -201,12 +222,37 @@ export default {
       padding: 0 4px;
     }
   }
+  .i-item .el-form-item {
+    margin-bottom: 12px;
+  }
+  .handle {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    cursor: move;
+    background: #409eff;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    color: #fff;
+    line-height: 16px;
+  }
   .key {
     font-size: 12px;
     color: #999;
     position: absolute;
-    left: 8px;
-    top: 4px;
+    left: 18px;
+    top: 0px;
+    input {
+      width: 160px;
+      height: 16px;
+      font-size: 12px;
+      color: #999;
+      border: none;
+      &:focus {
+        border: none;
+      }
+    }
   }
   .required {
     color: red;
@@ -235,16 +281,19 @@ export default {
     display: none;
   }
   &.active {
-    border: 1px solid #949494;
+    border: 1px solid #409eff;
     .remove {
       display: block;
       position: absolute;
       top: 0px;
       right: 0px;
       cursor: pointer;
-      font-size: 14px;
-      background: red;
+      background: #409eff;
+      width: 16px;
+      height: 16px;
+      text-align: center;
       color: #fff;
+      line-height: 16px;
     }
   }
 }

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import formItem from "../form-item";
+import vModel from "../../vModel";
 export default {
   props:{
     attrName:{
@@ -15,6 +15,6 @@ export default {
       default: ''
     }
   },
-  extends: formItem
+  extends: vModel
 };
 </script>

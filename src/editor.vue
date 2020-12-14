@@ -2,12 +2,12 @@
   <div class="container">
     <!-- 控件库 -->
     <el-card class="library" shadow="never">
-      <div class="library-group" v-for="(group,index) in library" :key="index">
-        <div class="name">{{group.name}}</div>
+      <div class="library-group" v-for="(group, index) in library" :key="index">
+        <div class="name">{{ group.name }}</div>
         <div class="widgets">
           <el-row :gutter="10">
-            <el-col :span="12" v-for="(widget,i) in group.widgets" :key="i">
-              <div @dblclick="add(widget)" class="library-item">{{widget.name}}</div>
+            <el-col :span="12" v-for="(widget, i) in group.widgets" :key="i">
+              <div @dblclick="add(widget)" class="library-item">{{ widget.name }}</div>
             </el-col>
           </el-row>
         </div>
@@ -20,34 +20,41 @@
     <el-card class="editor" shadow="never">
       <div class="header">
         <div class="operation">
-          <el-button size="mini" @click="preview = !preview">{{preview?'编辑':'预览'}}</el-button>
+          <el-button size="mini" @click="preview = !preview">
+            {{
+            preview ? "编辑" : "预览"
+            }}
+          </el-button>
+          <el-button size="mini" @click="showJsonDialog">查看JSON</el-button>
           <el-button size="mini" @click="flush">清空</el-button>
         </div>
         <el-button
-          :icon="show_attrs? 'el-icon-s-fold':'el-icon-s-unfold'"
+          :icon="show_attrs ? 'el-icon-s-fold' : 'el-icon-s-unfold'"
           @click="show_attrs = !show_attrs"
           type="text"
-        >{{show_attrs?'隐藏属性栏':'展示属性栏'}}</el-button>
+        >{{ show_attrs ? "隐藏属性栏" : "展示属性栏" }}</el-button>
       </div>
       <div class="content">
         <preview-forms
-          v-if="preview"
+          v-show="preview"
           :forms="editor.forms"
           :labelWidth="editor.labelWidth"
           :displayType="editor.displayType"
+          size="small"
         ></preview-forms>
         <input-content
-          v-else
+          v-show="!preview"
           ref="input-content"
           v-model="editor"
-          @selectIndex="(i)=>selectIndex = i"
+          size="small"
+          @selectIndex="i => (selectIndex = i)"
         ></input-content>
       </div>
     </el-card>
     <!-- 属性 -->
     <div class="attribute" v-show="show_attrs">
-      <el-tabs type="border-card" class="form_attrs">
-        <el-tab-pane class="library-group" label="表单属性">
+      <el-tabs type="border-card" class="form_attrs" value="attrs">
+        <el-tab-pane class="library-group" name="attrs" label="表单属性">
           <el-form label-width="100px" size="small">
             <el-form-item label="标签展示模式">
               <el-select size="mini" v-model="editor.displayType" placeholder="请选择标签展示模式">
@@ -61,26 +68,34 @@
           </el-form>
         </el-tab-pane>
       </el-tabs>
-      <el-tabs type="border-card" :stretch="true" v-if="selectIndex !== -1 && !preview">
-        <el-tab-pane class="library-group" label="控件属性">
+      <el-tabs
+        type="border-card"
+        :stretch="true"
+        v-if="selectIndex !== -1 && !preview"
+        value="attrs"
+      >
+        <el-tab-pane class="library-group" name="attrs" label="控件属性">
           <base-attrs
             v-model="editor.forms[selectIndex].attributes"
             :type="editor.forms[selectIndex].type"
           ></base-attrs>
         </el-tab-pane>
-        <el-tab-pane class="library-group" label="控件样式">
-          <ui-attrs
-            v-model="editor.forms[selectIndex].ui"
-            :showTable="showTable"
-          ></ui-attrs>
+        <el-tab-pane class="library-group" name="style" label="控件样式">
+          <ui-attrs v-model="editor.forms[selectIndex].ui" :showTable="showTable"></ui-attrs>
         </el-tab-pane>
-        <el-tab-pane class="library-group" label="验证规则">
-          <rule-attrs
-            v-model="editor.forms[selectIndex].rules"
-          ></rule-attrs>
-        </el-tab-pane>
+        <!-- <el-tab-pane class="library-group" name="rules" label="验证规则">
+          <rule-attrs v-model="editor.forms[selectIndex].rules"></rule-attrs>
+        </el-tab-pane> -->
       </el-tabs>
     </div>
+
+    <el-dialog title="Json" append-to-body :visible.sync="dialogVisible" width="600px">
+      <codemirror v-model="jsonString" :options="cmOptions"></codemirror>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
+        <el-button size="small" type="primary" @click="editJson">修 改</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -90,9 +105,14 @@ import Input from "./input";
 import Ui from "./ui";
 import Rules from "./rules";
 import FormGenerator from "./generator";
+import { codemirror } from "vue-codemirror";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/base16-dark.css";
+import "codemirror/mode/javascript/javascript.js";
 
 export default {
   components: {
+    codemirror,
     "base-attrs": Attrs,
     "input-content": Input,
     "ui-attrs": Ui,
@@ -125,15 +145,38 @@ export default {
     showTable: {
       type: Boolean,
       default: false
+    },
+    /**
+     * 可展示的组件，默认展示所有
+     */
+    components: {
+      type: Array,
+      default: () => {
+        return [];
+      }
     }
   },
   data() {
     return {
+      dialogVisible: false,
       selectIndex: this.value.forms.length ? 0 : -1,
       show_attrs: true,
       preview: false,
       library: this.$cfLibrary,
-      editor: this.value
+      editor: this.value,
+      jsonString: null,
+      cmOptions: {
+        // codemirror options
+        tabSize: 4,
+        mode: {
+          name: "javascript",
+          json: true
+        },
+        theme: "base16-dark",
+        lineNumbers: true,
+        line: true
+        // more codemirror options, 更多 codemirror 的高级配置...
+      }
     };
   },
   created() {
@@ -145,18 +188,57 @@ export default {
         });
       })
     ]);
+    this.library = this.library
+      .map(group => {
+        let widgets = group.widgets.filter(widget => {
+          if (
+            this.components.length == 0 ||
+            this.components.includes(widget.type)
+          ) {
+            return true;
+          }
+          return false;
+        });
+        group.widgets = widgets;
+        return group;
+      })
+      .filter(group => {
+        return group.widgets.length > 0;
+      });
   },
   watch: {
     editor(val) {
       this.$emit("input", val);
     }
   },
+  computed: {
+    json() {
+      return JSON.stringify(this.editor, null, 4);
+    }
+  },
   methods: {
     flush() {
-      this.$refs["input-content"].flush(JSON.parse(JSON.stringify(this.defaultForms)));
+      this.$refs["input-content"].flush(
+        JSON.parse(JSON.stringify(this.defaultForms))
+      );
     },
     add(item) {
+      item = JSON.parse(JSON.stringify(item))
+      delete item.name;
       this.$refs["input-content"].add(item);
+    },
+    showJsonDialog() {
+      this.jsonString = JSON.stringify(this.editor, null, 4);
+      this.dialogVisible = true;
+    },
+    editJson() {
+      try {
+        let json = JSON.parse(this.jsonString);
+        this.editor = json;
+        this.dialogVisible = false;
+      } catch (err) {
+        this.$message.warning("json 格式有误");
+      }
     }
   }
 };
@@ -167,9 +249,12 @@ export default {
   display: flex;
   justify-content: space-between;
   margin: 0 auto;
+  /deep/.el-card__body {
+    padding: 16px 8px;
+  }
   .library {
-    min-width: 300px;
-    max-width: 300px;
+    min-width: 240px;
+    max-width: 240px;
     box-sizing: border-box;
     .library-group {
       display: flex;
@@ -220,7 +305,7 @@ export default {
     .form-item {
       position: relative;
       min-height: 50px;
-      padding: 12px 24px;
+      padding: 24px 24px 6px;
       display: flex;
       .title {
         min-width: 100px;
@@ -265,8 +350,8 @@ export default {
     }
   }
   .attribute {
-    min-width: 300px;
-    max-width: 300px;
+    min-width: 294px;
+    max-width: 294px;
     .form_attrs {
       margin-bottom: 16px;
     }

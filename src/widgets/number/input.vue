@@ -9,10 +9,9 @@
 </template>
 
 <script>
-import formItem from "../form-item";
-
+import vModel from "../../vModel";
 export default {
-  extends: formItem,
+  extends: vModel,
   methods: {
     inputhandle({ target }) {
       target.value = target.value.replace(/[^\d.]/g, "");
@@ -22,7 +21,7 @@ export default {
         .replace(".", "$#$")
         .replace(/\./g, "")
         .replace("$#$", ".");
-    }
-  }
+    },
+  },
 };
 </script>
