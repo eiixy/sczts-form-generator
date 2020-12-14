@@ -16,7 +16,7 @@ Vue.use(formGenerator, {
     // 可以注入扩展组件配置
   ],
   // [可选] 注入扩展组件
-  extend: require.context('./components/form_generator_extends', true, /\.(vue|js)$/),
+  extend: require.context('./components/form_generator_extends/widgets', true, /\.(vue|js)$/),
 });
 
 ```

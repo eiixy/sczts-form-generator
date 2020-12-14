@@ -4,7 +4,7 @@
     <el-card class="widgets" shadow="never">
       <div class="widgets-group" v-for="(group, index) in widgets" :key="index">
         <div class="name">{{ group.name }}</div>
-        <div class="widgets">
+        <div class="widgets-items">
           <el-row :gutter="10">
             <el-col :span="12" v-for="(widget, i) in group.widgets" :key="i">
               <div @dblclick="add(widget)" class="widgets-item">{{ widget.name }}</div>
@@ -104,7 +104,7 @@ import Attrs from "./attributes";
 import Input from "./input";
 import Ui from "./ui";
 // import Rules from "./rules";
-import FormGenerator from "./generator";
+import fgRender from "./render";
 import { codemirror } from "vue-codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/base16-dark.css";
@@ -117,7 +117,7 @@ export default {
     "input-content": Input,
     "ui-attrs": Ui,
     // "rule-attrs": Rules,
-    "preview-forms": FormGenerator
+    "preview-forms": fgRender
   },
   props: {
     value: {
