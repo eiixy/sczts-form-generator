@@ -1,5 +1,7 @@
+## 简介
+
 ## 快速开始
-1. 安装依赖
+1. 安装
 ```bash
 npm i sczts-form-generator
 ```
@@ -11,12 +13,7 @@ import formGenerator, { fgWidgets } from 'sczts-form-generator'
 
 // ...
 Vue.use(formGenerator, {
-  widgets: [
-    ...widgets, // 组件配置
-    // 可以注入扩展组件配置
-  ],
-  // [可选] 注入扩展组件
-  extend: require.context('./components/form_generator_extends/widgets', true, /\.(vue|js)$/),
+  widgets: fgWidgets
 });
 
 ```
@@ -97,3 +94,179 @@ changeDelay | 监听可编辑条件项表单值的防抖延时 | Number
 
 
 ## 如何扩展自定义表单控件？
+* `/src/components/form_generator_extends` 为扩展控件目录
+* `/src/components/form_generator_extends/widgets.js` 为 widgets 配置文件
+* `/src/components/form_generator_extends/widgets` 为控件目录
+* `/src/components/form_generator_extends/widgets/[widget_name]/input.vue` 为控件实现代码
+* `/src/components/form_generator_extends/widgets/[widget_name]/attrbute.vue` 为控件自定义属性配置
+
+1. 编写 widgets 配置文件 `/src/components/form_generator_extends/widgets.js`
+```javascript
+export default [{
+  name: "扩展组件",
+  widgets: [
+    {
+      type: "upload",
+      name: "附件",
+      attributes: {
+        title: "附件",      // 默认属性 展示标题
+        description: "",    // 默认属性 说明文字
+        placeholder: "",    // 默认属性 占位符
+        required: false,    // 默认属性 是否必填
+        multiple: true,     // 默认属性 是否可多选
+        accept: [],         // 自定义属性 上传格式
+        // ...
+      },
+      ui: {
+        width: 24
+      }
+    }
+  ]
+}]
+```
+2. 编写自定义上传控件 `/src/components/form_generator_extends/widgets/upload/input.vue`
+```vue
+<template>
+  <el-upload
+    :action="upload_url"
+    :data="uploadData"
+    :multiple="item.attributes.multiple"
+    :accept="acceptType"
+    controls-position="right"
+    :on-remove="handleRemove"
+    :on-success="handleSuccess"
+    :before-upload="beforeUpload"
+    :file-list="fileList"
+  >
+    <el-button size="small" type="primary">点击上传</el-button>
+  </el-upload>
+</template>
+
+<script>
+import vModel from "sczts-form-generator/src/vModel";
+import { getUploadToken } from "@/api/common";
+import { Arr, Cache } from "sczts-helpers";
+
+export default {
+  extends: vModel,
+  data() {
+    return {
+      upload_url: "http://up-z2.qiniup.com",
+      uploadData: {
+        token: "",
+      },
+      fileList: [],
+    };
+  },
+  created() {
+    this.item.value = [];
+  },
+  computed: {
+    acceptType() {
+      let accept = this.item.attributes.accept;
+      return accept.length > 0 ? accept.join(",") : "*";
+    },
+  },
+  methods: {
+    // 上传前 从接口获取token值，并缓存3500秒，在回调中设置token值
+    beforeUpload() {
+      return Cache.rememberPromise("upload_token", 3500, () =>
+        getUploadToken()
+      ).then((res) => {
+        this.uploadData.token = res.data.data.token;
+      });
+    },
+    handleSuccess(response, file) {
+      this.item.value.push({
+        url: response.file,
+        name: response.name,
+      });
+    },
+    handleRemove(file, fileList) {
+      this.item.value = fileList.map((file) => {
+        return {
+          url: file.response.file,
+          name: file.response.name,
+        };
+      });
+    },
+  },
+};
+</script>
+```
+
+3. 上传控件属性配置[可选]  `/src/components/form_generator_extends/widgets/upload/attribure.vue`
+```vue
+<template>
+  <div>
+    <el-form-item label="文件类型">
+      <el-select
+        v-model="item.accept"
+        multiple
+        filterable
+        allow-create
+        default-first-option
+        placeholder="默认为所有类型"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+    </el-form-item>
+  </div>
+</template>
+
+<script>
+import vModel from "sczts-form-generator/src/vModel";
+export default {
+  extends: vModel,
+  data() {
+    return {
+      options: [
+        {
+          label: ".jpg",
+          value: ".jpg",
+        },
+        {
+          label: ".png",
+          value: ".png",
+        },
+        {
+          label: ".doc",
+          value: ".doc",
+        },
+        {
+          label: ".xls",
+          value: ".xls",
+        },
+        {
+          label: ".pdf",
+          value: ".pdf",
+        },
+      ],
+    };
+  },
+};
+</script>
+```
+
+4. 在 `main.js` 中全局引用时注入自定义配置
+```javascript
+import Vue from 'vue'
+import formGenerator, { fgWidgets } from 'sczts-form-generator'
+import fgExtends from "@/components/form_generator_extends/widgets.js"
+// ...
+Vue.use(formGenerator, {
+  widgets: {
+    ...fgWidgets,
+    ...fgExtends
+  },
+  // 注入扩展组件目录
+  extend: require.context('@/components/form_generator_extends/widgets', true, /\.(vue|js)$/),
+});
+
+```
