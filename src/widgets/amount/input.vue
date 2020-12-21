@@ -3,6 +3,7 @@
     class="w100"
     @input.native="inputhandle"
     :placeholder="item.attributes.placeholder"
+    :readonly="'readonly' in item.attributes ? item.attributes.readonly : false"
     v-model="item.value"
     controls-position="right"
   ></el-input>

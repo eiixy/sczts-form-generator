@@ -7,7 +7,8 @@ export default [{
         title: "单行输入框",
         description: "",
         placeholder: "请输入",
-        required: false
+        required: false,
+        readonly: false,
       },
       ui: {
         width: 24
@@ -25,6 +26,7 @@ export default [{
         description: "",
         placeholder: "请选择",
         required: false,
+        readonly: false,
         options: [{
           label: "选择1",
           value: 0
@@ -48,6 +50,7 @@ export default [{
         description: "",
         placeholder: "请选择",
         required: false,
+        readonly: false,
         options: [{
           label: "选择1",
           value: 1
@@ -70,7 +73,8 @@ export default [{
         title: "日期选择框",
         description: "",
         placeholder: "请选择",
-        required: false
+        required: false,
+        readonly: false,
       },
       ui: {
         width: 24
@@ -83,7 +87,8 @@ export default [{
         title: "时间日期选择框",
         description: "",
         placeholder: "请选择",
-        required: false
+        required: false,
+        readonly: false,
       },
       ui: {
         width: 24
@@ -98,6 +103,7 @@ export default [{
         placeholder: "请输入",
         rows: 3,
         required: false,
+        readonly: false,
       },
       ui: {
         width: 24
@@ -110,7 +116,8 @@ export default [{
         title: "数值框",
         description: "",
         placeholder: "请输入",
-        required: false
+        required: false,
+        readonly: false,
       },
       ui: {
         width: 24
@@ -123,7 +130,8 @@ export default [{
         title: "金额框",
         description: "",
         placeholder: "请输入",
-        required: false
+        required: false,
+        readonly: false,
       },
       ui: {
         width: 24,

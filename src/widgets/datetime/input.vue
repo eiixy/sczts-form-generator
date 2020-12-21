@@ -4,6 +4,7 @@
     v-model="item.value"
     type="datetime"
     :placeholder="item.attributes.placeholder"
+    :readonly="'readonly' in item.attributes ? item.attributes.readonly : false"
   ></el-date-picker>
 </template>
 

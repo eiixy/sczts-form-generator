@@ -4,6 +4,7 @@
     v-model="item.value"
     :placeholder="item.attributes.placeholder"
   >
+  :readonly="'readonly' in item.attributes ? item.attributes.readonly : false"
     <el-option
       v-for="(option,i) in item.attributes.options"
       :key="i"

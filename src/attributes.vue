@@ -15,6 +15,9 @@
         <el-form-item v-if="'multiple' == index" label="是否多选">
           <el-checkbox v-model="attrs.multiple"></el-checkbox>
         </el-form-item>
+        <el-form-item v-if="'readonly' == index" label="是否只读">
+          <el-checkbox v-model="attrs.readonly"></el-checkbox>
+        </el-form-item>
         <el-form-item v-if="'options' == index" label="可选项">
           <draggable v-model="attrs.options" handle=".handle" :animation="200">
             <div
