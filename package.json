@@ -1,6 +1,6 @@
 {
   "name": "sczts-form-generator",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "一款基于 element-ui 的表单设计器",
   "main": "index.js",
   "scripts": {
