@@ -90,7 +90,6 @@ labelWidth | label 展示宽度 | Number
 size | 表单控件大小 | String
 forms | 表单配置 | Array
 value | 表单数据 | Object
-changeDelay | 监听可编辑条件项表单值的防抖延时 | Number
 
 
 ## 如何扩展自定义表单控件？

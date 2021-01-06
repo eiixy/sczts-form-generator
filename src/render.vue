@@ -112,6 +112,7 @@ export default {
       this.forms.forEach((form) => {
         data[form.key] = form.value;
       });
+      this.$emit('input',data)
       return data;
     },
   },
